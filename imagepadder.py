@@ -152,14 +152,7 @@ fPadButton.pack()
 
 
 
-
-
-
+# Mainloop
 window.mainloop()
-
-
-# img = Image.open("D:/Chris/Pictures/tom_laughing.jpg")
-# img.show()
-
 
 
