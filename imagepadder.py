@@ -22,6 +22,17 @@ def btnPadImage_click():
     images = eInput.get().replace('"', "")
     outputPath = eOutput.get().replace('"', "")
 
+    if (images.strip() == "" and outputPath.strip() == ""):
+        tk.messagebox.showerror("Empty input/output error", "Make sure you have selected input files and an output folder.")
+        return
+    elif (images.strip() == ""):
+        tk.messagebox.showerror("Empty input error", "Make sure you have selected input files.")
+        return
+    elif (outputPath.strip() == ""):
+        tk.messagebox.showerror("Empty output error", "Make sure you have selected an output folder.")
+        return
+
+
     topVal = eTop.get()
     leftVal = eLeft.get()
     rightVal = eRight.get()
