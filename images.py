@@ -1,9 +1,10 @@
+import os
 import tkinter as tk
 import tkinter.filedialog
 import tkinter.messagebox
 from PIL import Image
 
-
+## FUNCTIONS ---------------------------------------------------------------------------
 # Button functions
 def btnInput_click():
     files = tk.filedialog.askopenfilenames()
@@ -18,32 +19,59 @@ def btnOutput_click():
     eOutput.insert(0, dirString)
 
 def btnPadImage_click():
-    images = eInput.get()
-    outputPath = eOutput.get()
+    images = eInput.get().replace('"', "")
+    outputPath = eOutput.get().replace('"', "")
 
     topVal = eTop.get()
     leftVal = eLeft.get()
     rightVal = eRight.get()
     bottomVal = eBottom.get()
 
+    # Make sure all values are integers
     try:
         topVal = int(topVal)
         leftVal = int(leftVal)
         rightVal = int(rightVal)
         bottomVal = int(bottomVal)
     except ValueError:
-        tk.messagebox.showerror("Value error", "All values must be whole numbers")
+        tk.messagebox.showerror("Value error", "All values must be whole numbers.")
+        return
 
+    # Split list of images into their individual paths
     imagePaths = tuple(images.split(','))
+
+    # Pad each image
     for path in imagePaths:
-        print(path)
+        padImage(path, outputPath, topVal, leftVal, rightVal, bottomVal)
 
-    print(outputPath)
-
-
+    tk.messagebox.showinfo("Success", f"Your images have been saved to {outputPath}.")
 
 
+# Utility functions
+def padImage(imagePath, outputPath, top, left, right, bottom):
+    # Open image and add the height/width that needs to be padded
+    image = Image.open(imagePath)
+    newHeight = image.height + top + bottom
+    newWidth = image.width + left + right
 
+    # Creating a new transparent image with the padding added
+    paddedImage = Image.new("RGBA", (newWidth, newHeight), (0, 0, 0, 0))
+
+    # Pasting the image to the padded image starting from the where the left and top padding end
+    paddedImage.paste(image,(left, top))
+
+    # Creating the save path and save the image
+    try:
+        baseFileName = os.path.basename(image.filename).split(".")[0]
+        savePath = f"{outputPath}/{baseFileName}.png"
+        paddedImage.save(savePath)
+    except:
+        tk.messagebox.showerror("Saving error", "There was an error saving your image.")
+        return
+
+
+
+## INTERFACE ---------------------------------------------------------------------------
 # tkinter window
 window = tk.Tk()
 window.title("Image Padder")
